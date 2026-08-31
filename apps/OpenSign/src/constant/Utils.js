@@ -3327,7 +3327,10 @@ export const getContainerScale = (pdfOriginalWH, pageNumber, containerWH) => {
 
 //function to get current laguage and set it in local
 export const saveLanguageInLocal = (i18n) => {
-  const detectedLanguage = i18n.language || "en";
+  // El respaldo es "es": esta funcion corre justo despues de `localStorage
+  // .clear()` en cada cierre de sesion, asi que era el punto exacto donde el
+  // portal se volvia a poner en ingles solo.
+  const detectedLanguage = i18n.language || "es";
   localStorage.setItem("i18nextLng", detectedLanguage);
 };
 

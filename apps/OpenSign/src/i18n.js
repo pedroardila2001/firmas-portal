@@ -11,10 +11,18 @@ i18n
     backend: {
       loadPath: "/locales/{{lng}}/{{ns}}.json"
     },
-    fallbackLng: "en", // Fallback to English if no other language is detected
+    // ALI opera en Colombia: el portal habla espanol salvo que la persona pida
+    // otra cosa a mano. Antes el detector consultaba `navigator` ANTES de caer
+    // al respaldo, asi que un navegador en ingles — el caso normal en un Mac o
+    // un Windows recien instalado — abria el portal en ingles aunque el
+    // destinatario fuera un abogado colombiano. Se quita "navigator" del orden:
+    // la unica fuente es la eleccion explicita guardada en localStorage, y a
+    // falta de eleccion manda `fallbackLng`.
+    fallbackLng: "es",
+    supportedLngs: ["es", "en", "fr", "it", "de", "hi", "kr"],
+    load: "languageOnly",
     detection: {
-      // Specifies the default language to fall back to if the detected language is not available.
-      order: ["localStorage", "navigator"],
+      order: ["localStorage"],
       // Defines where the detected language should be cached.
       caches: ["localStorage"]
     },
@@ -25,7 +33,8 @@ i18n
     interpolation: {
       escapeValue: false // Not needed for react as it escapes by default
     },
-    whitelist: ["en", "es", "fr", "it", "de", "hi", "kr"] // List of allowed languages
+    // `whitelist` es la opcion de i18next v19; la vigente es `supportedLngs`,
+    // declarada arriba. Se deja fuera para no tener dos listas divergentes.
   });
 
 export default i18n;
