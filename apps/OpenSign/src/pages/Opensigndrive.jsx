@@ -30,8 +30,8 @@ const AppLoader = () => {
 };
 function Opensigndrive() {
   const appName =
-    "OpenSign™";
-  const drivename = appName === "OpenSign™" ? "OpenSign™" : "";
+    "ALI Firmas";
+  const drivename = appName === "ALI Firmas" ? "ALI Firmas" : "";
   const { t } = useTranslation();
   const navigate = useNavigate();
   const scrollRef = useRef(null);

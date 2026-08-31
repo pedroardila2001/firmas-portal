@@ -3,7 +3,7 @@ import { TEditorConfiguration } from "../../documents/editor/core";
 const getCompletionEmail = (
 ): TEditorConfiguration => {
   const appName =
-    "OpenSign™";
+    "ALI Firmas";
 
   const logoBlock =
         {
@@ -16,7 +16,7 @@ const getCompletionEmail = (
               props: {
                 width: null,
                 height: 50,
-                url: "https://qikinnovation.ams3.digitaloceanspaces.com/logo.png",
+                url: "https://firma.aliado.pro/static/images/ali-logo.png",
                 alt: "logo",
                 linkHref: null,
                 contentAlignment: "middle"

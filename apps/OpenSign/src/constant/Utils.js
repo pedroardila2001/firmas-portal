@@ -117,7 +117,7 @@ const applyDuplicateResponsesToPages = (pages = []) => {
 export function getEnv() {
   return window?.RUNTIME_ENV || {};
 }
-const appName = "OpenSign™";
+const appName = "ALI Firmas";
 
 export const defaultMailBody = `<p>Hi {{receiver_name}},</p><br><p>We hope this email finds you well. {{sender_name}}&nbsp;has requested you to review and sign&nbsp;{{document_title}}.</p><p>Your signature is crucial to proceed with the next steps as it signifies your agreement and authorization.</p><br><p><a href='{{signing_url}}' rel='noopener noreferrer' target='_blank'>Sign here</a></p><br><br><p>If you have any questions or need further clarification regarding the document or the signing process,  please contact the sender.</p><br><p>Thanks</p><p> Team ${appName}</p><br>`;
 export const defaultMailSubject = `{{sender_name}} has requested you to sign {{document_title}}`;
@@ -1503,7 +1503,7 @@ export const addInitialData = (signerPos, setXyPosition, value, userId) => {
 
 //function for embed document id
 export const embedDocId = async (pdfOriginalWH, pdfDoc, documentId) => {
-  const appName = "OpenSign™";
+  const appName = "ALI Firmas";
   // `fontBytes` is used to embed custom font in pdf
   const fontBytes = await fileasbytes(
     "https://cdn.opensignlabs.com/webfonts/times.ttf"
@@ -2591,7 +2591,7 @@ export const embedWidgetsToDoc = async (
   } else {
     return {
       error:
-        "This pdf is not compatible with opensign please contact <support@opensignlabs.com>"
+        "Este PDF no es compatible con ALI Firmas. Escríbanos a <soporte@aliado.pro>"
     };
   }
 };
@@ -2835,7 +2835,7 @@ export const getAppLogo = async () => {
     if (tenant) {
       const resolvedFavicon =
         tenant?.favicon || tenant?.logo || appInfo.fev_Icon;
-      localStorage.setItem("appname", "OpenSign™");
+      localStorage.setItem("appname", "ALI Firmas");
       localStorage.setItem("favicon", appInfo.fev_Icon);
       return {
         logo: tenant?.logo,
@@ -3058,7 +3058,7 @@ export const handleToPrint = async (event, setIsDownloading, pdfDetails) => {
   try {
     // const url = await Parse.Cloud.run("getsignedurl", { url: pdfUrl });
     //`localStorage.getItem("baseUrl")` is also use in public-profile flow for public-sign
-    //if we give this `appInfo.baseUrl` as a base url then in public-profile it will create base url of it's window.location.origin ex- opensign.me which is not base url
+    //if we give this `appInfo.baseUrl` as a base url then in public-profile it will create base url of it's window.location.origin which is not base url
     const axiosRes = await axios.post(
       `${localStorage.getItem("baseUrl")}/functions/getsignedurl`,
       {
@@ -3102,7 +3102,7 @@ export const handleToPrint = async (event, setIsDownloading, pdfDetails) => {
 };
 const downloadCertificate = async (certificate, isZip, asBlob) => {
   try {
-    const appName = "OpenSign™";
+    const appName = "ALI Firmas";
     const certificateUrl = certificate;
     if (isZip) {
       return certificateUrl;
@@ -4221,8 +4221,8 @@ function _removeWidgetAnnotations(pdfDoc) {
 }
 
 export const mailTemplate = (param) => {
-  const appName = "OpenSign™";
-  const logo = `<div style='padding:10px'><img src='https://qikinnovation.ams3.digitaloceanspaces.com/logo.png' height='50' /></div>`;
+  const appName = "ALI Firmas";
+  const logo = `<div style='padding:10px'><img src='https://firma.aliado.pro/static/images/ali-logo.png' height='50' /></div>`;
 
   const subject = `${param.senderName} has requested you to sign "${param.title}"`;
   const body =

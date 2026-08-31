@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Parse from "parse";
 import { appInfo } from "../constant/appinfo";
-import { NavLink, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import {
   getAppLogo,
   openInNewTab,
@@ -16,7 +16,7 @@ import { emailRegex } from "../constant/const";
 
 const AddAdmin = () => {
   const appName =
-    "OpenSign™";
+    "ALI Firmas";
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -31,7 +31,6 @@ const AddAdmin = () => {
   const [caseDigitValid, setCaseDigitValid] = useState(false);
   const [specialCharValid, setSpecialCharValid] = useState(false);
   const [isAuthorize, setIsAuthorize] = useState(false);
-  const [isSubscribeNews, setIsSubscribeNews] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [state, setState] = useState({
     loading: false,
@@ -127,9 +126,6 @@ const AddAdmin = () => {
             try {
               const usersignup = await Parse.Cloud.run("addadmin", params);
               if (usersignup) {
-                if (isSubscribeNews) {
-                  subscribeNewsletter();
-                }
                 handleNavigation(userRes.getSessionToken());
               }
             } catch (err) {
@@ -255,15 +251,6 @@ const AddAdmin = () => {
     );
     setSpecialCharValid(/[!@#$%^&*()\-_=+{};:,<.>]/.test(newPassword));
   };
-  const subscribeNewsletter = async () => {
-    try {
-      const params = { name: name, email: email, domain: window.location.host };
-      await Parse.Cloud.run("newsletter", params);
-      // console.log("newsletter ", newsletter);
-    } catch (err) {
-      console.log("err in subscribeNewsletter", err);
-    }
-  };
   return (
     <div className="h-screen flex justify-center">
       {state.loading ? (
@@ -283,19 +270,6 @@ const AddAdmin = () => {
                   <h2 className="text-[30px] text-center mt-3 font-medium">
                     {t("opensign-setup", { appName })}
                   </h2>
-                  <NavLink
-                    to="https://discord.com/invite/xe9TDuyAyj"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-center text-sm mt-1 text-[blue] cursor-pointer"
-                  >
-                    {t("join-discord")}
-                    <i
-                      aria-hidden="true"
-                      className="fa-brands fa-discord ml-1"
-                    ></i>
-                    {/* <span className="fa-sr-only">OpenSign&apos;s Discord</span> */}
-                  </NavLink>
                   <div className="px-6 py-3 text-xs">
                     <label className="block ">
                       {t("name")}{" "}
@@ -459,28 +433,13 @@ const AddAdmin = () => {
                         className="underline cursor-pointer ml-1"
                         onClick={() =>
                           openInNewTab(
-                            "https://www.opensignlabs.com/terms-and-conditions"
+                            "https://www.aliado.pro/terminos"
                           )
                         }
                       >
                         {t("term")}
                       </span>
                       <span>.</span>
-                    </div>
-                    <div className="mt-2.5 ml-1 flex flex-row items-center">
-                      <input
-                        type="checkbox"
-                        className="op-checkbox op-checkbox-sm"
-                        id="subscribetoopensign"
-                        checked={isSubscribeNews}
-                        onChange={(e) => setIsSubscribeNews(e.target.checked)}
-                      />
-                      <label
-                        className="text-xs cursor-pointer ml-1 mb-0"
-                        htmlFor="subscribetoopensign"
-                      >
-                        {t("subscribe-to-opensign")}
-                      </label>
                     </div>
                   </div>
                   <div className="mx-4 text-center text-xs font-bold mb-3">

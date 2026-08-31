@@ -27,7 +27,7 @@ export const templateReportTour = [
         Share, etc.
         <a
           className="cursor-pointer op-text-primary"
-          href="https://docs.opensignlabs.com/docs/help/Templates/manage-templates"
+          href="https://www.aliado.pro"
           target="_blank"
           rel="noopener noreferrer"
         >

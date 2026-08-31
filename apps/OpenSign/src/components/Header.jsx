@@ -205,7 +205,7 @@ const Header = ({ isConsole, setIsLoggingOut }) => {
                 <>
                     <li
                       onClick={() =>
-                        openInNewTab("https://docs.opensignlabs.com")
+                        openInNewTab("https://www.aliado.pro")
                       }
                     >
                       <span>
