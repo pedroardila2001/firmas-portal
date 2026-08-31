@@ -2,8 +2,113 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Tipografia ALI ────────────────────────────────────────────────────────
+ * Fuente unica de verdad: packages/ali-ui/tailwind-preset.cjs del repo ALI-v3.
+ * Cuerpo en Inter, titulares en Bodoni Moda. La pila de respaldo (Didot,
+ * Bodoni, Georgia) es la misma que usa apps/web, asi que si Google Fonts no
+ * carga la pagina sigue siendo serif y no cae a Times del navegador.
+ * El fondo ya no es blanco fijo: lo pone el tema daisyUI (base-200 = fondo de
+ * pagina), de modo que el tema oscuro no queda con un body blanco debajo. */
 body {
-  background-color: white;
+  @apply bg-base-200 text-base-content;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Titulares de pagina en serif, igual que el contrato tipografico de ALI
+   (apps/web/src/index.css). Solo h1/h2: h3+ son etiquetas de UI, no titulos. */
+h1,
+h2 {
+  font-family: "Bodoni Moda", Didot, Bodoni, Georgia, serif;
+  letter-spacing: -0.01em;
+}
+
+/* ── Superficie de autenticacion ALI ───────────────────────────────────────
+ * La comparten /, /forgetpassword, /login/:base64url y /sso para que las
+ * cuatro puertas de entrada al portal sean la misma pagina. Calcada de
+ * apps/web/src/pages/LoginPage.tsx: columna centrada, sin ilustracion, la
+ * marca arriba y el formulario en una tarjeta de borde de 1px. */
+.ali-auth-page {
+  @apply flex min-h-screen w-full flex-col items-center justify-center px-5 py-10;
+  @apply bg-base-200 text-base-content;
+}
+
+.ali-auth-card {
+  @apply w-full max-w-[420px] rounded-xl border border-black/[0.08] bg-base-100 p-7 md:p-8;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 32px rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="opensigndark"] .ali-auth-card {
+  @apply border-white/[0.08];
+  box-shadow: 0 20px 46px rgba(0, 0, 0, 0.38);
+}
+
+/* Campo de texto de la superficie de autenticacion: alto comodo, radio 0.5rem
+   y anillo de foco con el acento neutro de ALI (no el turquesa de OpenSign). */
+.ali-auth-input {
+  @apply w-full rounded-lg border border-black/[0.12] bg-base-100 px-3 py-2.5 text-[14px] text-base-content;
+  @apply outline-none transition-colors;
+}
+
+.ali-auth-input::placeholder {
+  @apply text-base-content/35;
+}
+
+.ali-auth-input:hover {
+  @apply border-black/25;
+}
+
+.ali-auth-input:focus {
+  @apply border-primary;
+  box-shadow: 0 0 0 3px rgba(23, 23, 23, 0.1);
+}
+
+[data-theme="opensigndark"] .ali-auth-input {
+  @apply border-white/[0.14];
+}
+
+[data-theme="opensigndark"] .ali-auth-input:hover {
+  @apply border-white/30;
+}
+
+[data-theme="opensigndark"] .ali-auth-input:focus {
+  box-shadow: 0 0 0 3px rgba(250, 250, 250, 0.14);
+}
+
+/* Boton primario de la superficie de autenticacion. Usa `primary`, que en ALI
+   es el casi-negro #171717 (blanco en oscuro), no un color de marca. */
+.ali-auth-btn {
+  @apply flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5;
+  @apply text-[14px] font-medium text-primary-content transition-opacity;
+}
+
+.ali-auth-btn:hover:not(:disabled) {
+  @apply opacity-90;
+}
+
+.ali-auth-btn:disabled {
+  @apply cursor-not-allowed opacity-50;
+}
+
+/* Selector de idioma discreto: es el unico control que sobrevive del pie de
+   OpenSign, asi que se comporta como texto secundario hasta que se enfoca. */
+.ali-lang-select {
+  @apply cursor-pointer rounded-md border border-transparent bg-transparent py-1 pl-1 pr-6 text-[12px];
+  @apply text-base-content/55 outline-none transition-colors hover:text-base-content;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23737373' stroke-width='1.5'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.15rem center;
+  background-size: 0.9rem;
+}
+
+.ali-lang-select:focus-visible {
+  @apply border-black/15 text-base-content;
+}
+
+[data-theme="opensigndark"] .ali-lang-select:focus-visible {
+  @apply border-white/20;
 }
 
 /* Custom CSS to hide scrollbar */
@@ -120,48 +225,48 @@ body {
 
   /* React-tour modal styling */
   .reactour__popover {
-    background-color: #1f2937 !important;
-    color: #e5e7eb !important;
-    border: 1px solid #374151 !important;
+    background-color: #171717 !important;
+    color: #fafafa !important;
+    border: 1px solid #262626 !important;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
   }
 
   .reactour__close-button {
-    color: #e5e7eb !important;
-    background-color: #374151 !important;
-    border: 1px solid #4b5563 !important;
+    color: #fafafa !important;
+    background-color: #262626 !important;
+    border: 1px solid #404040 !important;
   }
 
   .reactour__close-button:hover {
-    background-color: #4b5563 !important;
+    background-color: #404040 !important;
     color: #ffffff !important;
   }
 
 
   /* ReactTooltip styling */
   .react-tooltip {
-    background-color: #1f2937 !important;
-    color: #e5e7eb !important;
-    border: 1px solid #374151 !important;
+    background-color: #171717 !important;
+    color: #fafafa !important;
+    border: 1px solid #262626 !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
   }
 
   .react-tooltip.type-dark {
-    background-color: #1f2937 !important;
-    color: #e5e7eb !important;
+    background-color: #171717 !important;
+    color: #fafafa !important;
   }
 
   .react-tooltip.place-top:after,
   .react-tooltip.place-bottom:after,
   .react-tooltip.place-left:after,
   .react-tooltip.place-right:after {
-    border-color: #1f2937 !important;
+    border-color: #171717 !important;
   }
 
   /* Tour content improvements */
   .reactour__badge {
-    background-color: #007acc !important;
-    color: #ffffff !important;
+    background-color: #7da8ff !important;
+    color: #0a0a0a !important;
   }
 
   .reactour__popover h1,
@@ -174,56 +279,79 @@ body {
   }
 
   .reactour__popover p {
-    color: #e5e7eb !important;
+    color: #fafafa !important;
   }
 
 
   /* React-datepicker dark mode styling */
   .react-datepicker {
-    background-color: #1f2937 !important;
-    border: 1px solid #374151 !important;
-    color: #e5e7eb !important;
+    background-color: #171717 !important;
+    border: 1px solid #262626 !important;
+    color: #fafafa !important;
   }
 
   .react-datepicker__header {
-    background-color: #374151 !important;
-    border-bottom: 1px solid #4b5563 !important;
-    color: #e5e7eb !important;
+    background-color: #262626 !important;
+    border-bottom: 1px solid #404040 !important;
+    color: #fafafa !important;
   }
 
   .react-datepicker__current-month,
   .react-datepicker__day-name {
-    color: #e5e7eb !important;
+    color: #fafafa !important;
   }
 
   .react-datepicker__day {
-    color: #e5e7eb !important;
+    color: #fafafa !important;
   }
 
   .react-datepicker__day:hover {
-    background-color: #4b5563 !important;
+    background-color: #404040 !important;
     color: #ffffff !important;
   }
 
   .react-datepicker__day--selected {
-    background-color: #007acc !important;
-    color: #ffffff !important;
+    background-color: #7da8ff !important;
+    color: #0a0a0a !important;
   }
 
   .react-datepicker__day--keyboard-selected {
-    background-color: #374151 !important;
-    color: #e5e7eb !important;
+    background-color: #262626 !important;
+    color: #fafafa !important;
   }
 
   .react-datepicker__day--outside-month {
-    color: #6b7280 !important;
+    color: #737373 !important;
   }
 
   .react-datepicker__navigation {
-    color: #e5e7eb !important;
+    color: #fafafa !important;
   }
 
   .react-datepicker__navigation:hover {
-    background-color: #4b5563 !important;
+    background-color: #404040 !important;
+  }
+}
+
+/* Spinner de la superficie de autenticacion: un anillo neutro de 1.5px en el
+   color del texto. El `op-loading-infinity` de daisyUI dibuja un simbolo de
+   infinito que no pertenece al lenguaje visual de ALI, y aqui la espera es la
+   primera impresion del portal. */
+.ali-auth-spinner {
+  @apply inline-block h-6 w-6 rounded-full border-[1.5px] border-base-content/15;
+  border-top-color: currentColor;
+  color: inherit;
+  animation: ali-auth-spin 0.7s linear infinite;
+}
+
+@keyframes ali-auth-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ali-auth-spinner {
+    animation-duration: 2.4s;
   }
 }
