@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Package from "../../package.json";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import { sourceCodeUrl } from "../constant/const";
 const Footer = () => {
   const appName = "ALI Firmas";
   const { t } = useTranslation();
@@ -49,6 +50,15 @@ const Footer = () => {
               {appName} ( {t("version")}:{" "}
               {version ? version : `${Package.version} `})
             </span>
+            {" · "}
+            <a
+              href={sourceCodeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              {t("source-code")}
+            </a>
           </p>
         </aside>
       </footer>

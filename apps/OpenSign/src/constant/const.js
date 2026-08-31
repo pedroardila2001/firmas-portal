@@ -1,3 +1,7 @@
+// AGPL-3 §13: quien usa el portal por red tiene derecho a recibir el código
+// fuente correspondiente (OpenSign + los parches de ALI). Este enlace es esa
+// oferta. DEBE apuntar al fork público de ALI antes de desplegar.
+export const sourceCodeUrl = "https://github.com/aliado-pro/firmas-portal";
 export const contactCls = "contracts_Contactbook";
 export const templateCls = "contracts_Template";
 export const documentCls = "contracts_Document";
