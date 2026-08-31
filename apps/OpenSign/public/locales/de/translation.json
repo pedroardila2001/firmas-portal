@@ -1613,5 +1613,6 @@
   "access-code-upgrade-msg": "Zugangscodes sind nur in kostenpflichtigen Tarifen verfügbar. Aktualisieren Sie Ihren Tarif, um Zugangscodes für Empfänger hinzuzufügen.",
   "show-access-code": "Zugangscode anzeigen",
   "hide-access-code": "Zugangscode ausblenden",
-  "already-copied-to-clipboard": "Bereits in die Zwischenablage kopiert"
+  "already-copied-to-clipboard": "Bereits in die Zwischenablage kopiert",
+  "ali-sso-entering": "Anmeldung mit deinem ALI-Konto…"
 }

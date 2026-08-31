@@ -1614,5 +1614,6 @@
   "access-code-upgrade-msg": "I codici di accesso sono disponibili solo nei piani a pagamento. Aggiorna il tuo piano per aggiungere codici di accesso per i destinatari.",
   "show-access-code": "Mostra codice di accesso",
   "hide-access-code": "Nascondi codice di accesso",
-  "already-copied-to-clipboard": "Già copiato negli appunti"
+  "already-copied-to-clipboard": "Già copiato negli appunti",
+  "ali-sso-entering": "Accesso con il tuo account ALI…"
 }

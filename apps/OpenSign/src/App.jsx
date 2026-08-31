@@ -35,6 +35,7 @@ const UpdateExistUserAdmin = lazyWithRetry(
 const Preferences = lazyWithRetry(() => import("./pages/Preferences"));
 const Login = lazyWithRetry(() => import("./pages/Login"));
 const VerifyDocument = lazyWithRetry(() => import("./pages/VerifyDocument"));
+const SsoLogin = lazyWithRetry(() => import("./pages/SsoLogin"));
 const EmailBuilder = lazyWithRetry(() => import("./pages/EmailBuilder"));
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.mjs`;
@@ -84,6 +85,11 @@ function App() {
               path="/login/:base64url"
               element={<Lazy Page={GuestLogin} />}
             />
+            {/* Receptor de SSO de ALI: entra con el token del fragmento
+                (#token=...&email=...) y aterriza en el tablero. Va FUERA de
+                ValidateRoute a proposito — ese guard cierra la sesion que
+                encuentra a medias, y aqui lo que se hace es instalar una. */}
+            <Route path="/sso" element={<Lazy Page={SsoLogin} />} />
             <Route path="/debugpdf" element={<Lazy Page={DebugPdf} />} />
               <Route
                 path="/forgetpassword"
