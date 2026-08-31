@@ -5,6 +5,8 @@ import axios from "axios";
 import { NavLink, useNavigate, useLocation } from "react-router";
 import ModalUi from "../primitives/ModalUi";
 import {
+  aliDirectLoginKey,
+  aliSsoStartUrl,
   emailRegex,
 } from "../constant/const";
 import Alert from "../primitives/Alert";
@@ -22,6 +24,62 @@ import {
   AliAuthLoader,
   AliWordmark
 } from "../components/AliAuthShell";
+
+// ── Puerta de entrada del portal ────────────────────────────────────────────
+// firma.aliado.pro no tiene poblacion propia: todo el que entra por aqui ya es
+// usuario de ALI. Enseñarle un formulario de correo y contrasena es pedirle una
+// credencial que no tiene — la queja original era exactamente esa. Asi que la
+// raiz, sin sesion de portal, no es una pantalla de acceso sino un rebote:
+//
+//   sin accesstoken  →  https://aliado.pro/firma-sso  →  /sso#token=…  →  tablero
+//
+// Tres modos, resueltos ANTES del primer pintado para que el formulario no
+// asome ni un fotograma:
+//
+//   session — hay `accesstoken`: es el mismo criterio con el que HomeLayout y
+//             ValidateRoute deciden que hay sesion. Comportamiento de siempre
+//             (GetLoginData revalida y aterriza en el tablero).
+//   form    — `?direct=1` en la URL o la marca en sessionStorage: formulario
+//             clasico. Es el escape para el administrador, para las cuentas de
+//             servicio y para cuando el SSO falla.
+//   sso     — todo lo demas: pantalla de espera de marca y `location.replace`
+//             hacia ALI. `replace` y no `assign` para no dejar el rebote en el
+//             historial: el boton "atras" del navegador tiene que salir del
+//             portal, no volver a dispararlo.
+//
+// El `?direct=1` se copia a sessionStorage porque la marca tiene que sobrevivir
+// a un F5 y a un `navigate("/")` interno; muere al cerrar la pestana, que es
+// justo la vida util de una excepcion.
+//
+// OJO: el modo `sso` no llama a `getlogobydomain`, asi que la instalacion
+// virgen — la que redirige a /addadmin para crear el primer administrador —
+// solo se alcanza por `/?direct=1`. Es el mismo escape de siempre y esta en el
+// README de los parches.
+const readDirectReason = () => {
+  try {
+    return sessionStorage.getItem(aliDirectLoginKey);
+  } catch {
+    return null; // navegacion privada con almacenamiento bloqueado
+  }
+};
+
+const resolveEntryMode = () => {
+  if (localStorage.getItem("accesstoken")) {
+    return { mode: "session", reason: null };
+  }
+  const askedDirect =
+    new URLSearchParams(window.location.search).get("direct") === "1";
+  let reason = readDirectReason();
+  if (askedDirect && !reason) {
+    reason = "manual";
+    try {
+      sessionStorage.setItem(aliDirectLoginKey, reason);
+    } catch {
+      // sin sessionStorage el `?direct=1` de la URL sigue mandando
+    }
+  }
+  return reason ? { mode: "form", reason } : { mode: "sso", reason: null };
+};
 
 function Login() {
   const appName =
@@ -45,7 +103,15 @@ function Login() {
   });
   const [isModal, setIsModal] = useState(false);
   const [errMsg, setErrMsg] = useState();
+  // Se calcula una sola vez, en el primer render: si se resolviera dentro del
+  // efecto habria un fotograma con el formulario pintado antes del rebote.
+  const [entry] = useState(resolveEntryMode);
   useEffect(() => {
+    if (entry.mode === "sso") {
+      // Nada de `getlogobydomain` ni de redux: esta pestana se va del sitio.
+      window.location.replace(aliSsoStartUrl);
+      return;
+    }
     handleUserExist();
     // eslint-disable-next-line
   }, []);
@@ -411,6 +477,23 @@ function Login() {
   // se leen como un formulario de administracion, no como una entrada.
   const inputId = (name) => `ali-login-${name}`;
 
+  // Rebote hacia ALI: espera con marca, nunca el formulario. El enlace es la
+  // salida si la redireccion tarda o el emisor esta caido; va como <a> con href
+  // real — y no como boton — para que se pueda abrir en otra pestana y para que
+  // funcione aunque el JS de la navegacion se quede colgado.
+  if (entry.mode === "sso") {
+    return (
+      <AliAuthLoader message={t("ali-sso-connecting")}>
+        <a
+          href="/?direct=1"
+          className="text-[12px] text-base-content/45 underline-offset-2 transition-colors hover:text-base-content hover:underline"
+        >
+          {t("ali-sso-use-password")}
+        </a>
+      </AliAuthLoader>
+    );
+  }
+
   return errMsg ? (
     <main className="ali-auth-page">
       <AliWordmark />
@@ -435,6 +518,14 @@ function Login() {
         subtitle={t("Login-to-your-account")}
       >
         <form onSubmit={handleLoginBtn} aria-label="Login Form">
+          {entry.reason === "sso-failed" && (
+            <div
+              role="status"
+              className="mb-5 rounded-[10px] border border-base-content/15 bg-base-content/[0.04] px-3.5 py-2.5 text-[12.5px] leading-relaxed text-base-content/70"
+            >
+              {t("ali-sso-failed")}
+            </div>
+          )}
           <div className="space-y-4">
             <div>
               <label

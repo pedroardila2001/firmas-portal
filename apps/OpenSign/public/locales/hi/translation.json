@@ -1615,5 +1615,8 @@
   "show-access-code": "एक्सेस कोड दिखाएं",
   "hide-access-code": "एक्सेस कोड छिपाएं",
   "already-copied-to-clipboard": "पहले से क्लिपबोर्ड में कॉपी किया गया है",
-  "ali-sso-entering": "आपके ALI खाते से साइन इन किया जा रहा है…"
+  "ali-sso-entering": "आपके ALI खाते से साइन इन किया जा रहा है…",
+  "ali-sso-connecting": "ALI से कनेक्ट किया जा रहा है…",
+  "ali-sso-use-password": "पासवर्ड से साइन इन करें",
+  "ali-sso-failed": "हम आपके ALI खाते से साइन इन नहीं कर सके; कृपया अपना पासवर्ड इस्तेमाल करें।"
 }

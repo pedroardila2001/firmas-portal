@@ -1615,5 +1615,8 @@
   "show-access-code": "액세스 코드 표시",
   "hide-access-code": "액세스 코드 숨기기",
   "already-copied-to-clipboard": "이미 클립보드에 복사됨",
-  "ali-sso-entering": "ALI 계정으로 로그인하는 중…"
+  "ali-sso-entering": "ALI 계정으로 로그인하는 중…",
+  "ali-sso-connecting": "ALI에 연결하는 중…",
+  "ali-sso-use-password": "비밀번호로 로그인",
+  "ali-sso-failed": "ALI 계정으로 로그인하지 못했습니다. 비밀번호를 사용해 주세요."
 }

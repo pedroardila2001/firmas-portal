@@ -85,16 +85,19 @@ export function AliAuthShell({
   );
 }
 
-// Pantalla de espera con marca. La usa /sso mientras valida el token que trae
-// ALI: sin ella la persona ve un spinner desnudo y no sabe si aterrizo en el
-// sitio correcto.
-export function AliAuthLoader({ message }) {
+// Pantalla de espera con marca. La usan /sso mientras valida el token que trae
+// ALI y la raiz mientras rebota hacia ALI a pedir sesion: sin ella la persona
+// ve un spinner desnudo y no sabe si aterrizo en el sitio correcto.
+// `children` es la salida de emergencia (p. ej. "Entrar con contrasena") para
+// cuando la espera se alarga; va debajo del mensaje y en tono secundario.
+export function AliAuthLoader({ message, children }) {
   return (
     <main className="ali-auth-page" aria-live="polite" aria-busy="true">
       <AliWordmark />
       <div className="mt-9 flex flex-col items-center gap-4">
         <span className="ali-auth-spinner" aria-hidden="true" />
         <p className="text-[13.5px] text-base-content/55">{message}</p>
+        {children ? <div className="mt-1">{children}</div> : null}
       </div>
     </main>
   );

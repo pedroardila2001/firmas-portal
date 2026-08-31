@@ -88,7 +88,11 @@ const Header = ({ isConsole, setIsLoggingOut }) => {
     localStorage.setItem("parseAppId", appid);
     localStorage.setItem("favicon", favicon);
     setIsLoggingOut(false);
-    navigate("/");
+    // "/?direct=1" y no "/": desde que la raiz recicla la sesion de ALI, salir
+    // a la raiz pelada volveria a entrar sola y cerrar sesion seria imposible.
+    // El escape deja el formulario a la vista mientras dure la pestana; para
+    // volver a entrar con la cuenta de ALI basta con abrir el portal de nuevo.
+    navigate("/?direct=1");
   };
 
   //handle to close profile drop down menu onclick screen

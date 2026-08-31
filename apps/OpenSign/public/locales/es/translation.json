@@ -1615,5 +1615,8 @@
   "show-access-code": "Mostrar código de acceso",
   "hide-access-code": "Ocultar código de acceso",
   "already-copied-to-clipboard": "Ya copiado al portapapeles",
-  "ali-sso-entering": "Entrando con tu cuenta de ALI…"
+  "ali-sso-entering": "Entrando con tu cuenta de ALI…",
+  "ali-sso-connecting": "Conectando con ALI…",
+  "ali-sso-use-password": "Entrar con contraseña",
+  "ali-sso-failed": "No pudimos entrar con tu cuenta de ALI; usa tu contraseña."
 }

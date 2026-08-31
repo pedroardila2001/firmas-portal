@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { appInfo, serverUrl_fn } from "../constant/appinfo";
+import { aliDirectLoginKey } from "../constant/const";
 import { getAppLogo } from "../constant/Utils";
 import { fetchAppInfo } from "../redux/reducers/infoReducer";
 import { showTenant } from "../redux/reducers/ShowTenant";
@@ -38,7 +39,8 @@ import { AliAuthLoader } from "../components/AliAuthShell";
 //      del rol, no a una ruta escrita a mano.
 //
 // Cualquier fallo (token vencido, revocado, usuario deshabilitado, rol sin
-// menu) termina en el login normal: no se toca nada de lo que ya hubiera.
+// menu) termina en el formulario clasico — `/?direct=1`, ver goToLogin — sin
+// tocar nada de lo que ya hubiera.
 
 function SsoLogin() {
   const { t, i18n } = useTranslation();
@@ -61,7 +63,23 @@ function SsoLogin() {
     return pageType && pageId ? `/${pageType}/${pageId}` : "/";
   };
 
-  const goToLogin = () => navigate("/", { replace: true });
+  // Caida al formulario clasico. NO se puede navegar a "/" a secas: la raiz
+  // rebota a ALI en cuanto no ve sesion, ALI devuelve aqui con otro token que
+  // vuelve a fallar por la misma razon (vencido, revocado, rol sin menu) y el
+  // par queda dando vueltas. Se deja marcado en sessionStorage que en esta
+  // pestana se entra con contrasena — con el motivo, para que el login pueda
+  // explicar por que aparecio el formulario — y se va a `/?direct=1`, que es
+  // el mismo escape manual del administrador. Al abrir una pestana nueva la
+  // marca no existe y se vuelve a intentar el SSO.
+  const goToLogin = () => {
+    try {
+      sessionStorage.setItem(aliDirectLoginKey, "sso-failed");
+    } catch {
+      // Navegacion privada con almacenamiento bloqueado: el `?direct=1` de la
+      // URL basta para no rebotar, aunque no sobreviva a un F5.
+    }
+    navigate("/?direct=1", { replace: true });
+  };
 
   const setLocalVar = (user, sessionToken) => {
     localStorage.setItem("accesstoken", sessionToken);
