@@ -15,12 +15,12 @@ export const appInfo = {
   baseUrl: serverUrl_fn(),
   defaultRole: "contracts_User",
   fev_Icon:
-    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAALlJREFUaEPtmN0NwjAMBpNxYDKYiM1Yp90g93CKStH1NbIdfz921Dker2Pc+Js1cDF7MXAxASMGYkAigBI6vh9ZwoXP53uZoAYcvhwdA3mAVbI2aSb+9zFKU4IURB6j/HoPUIEa2G3iGIAhQQDlAUIoE2diabIklISS0NoFPebo77RF6OenEF3QntOm128he0GKrwHyACFoz2MgBqSGkpAEcHs47oHtN5AFakACqMNjQEMoE8SABFCHn4HE2zGHSLeEAAAAAElFTkSuQmCC",
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADQElEQVR42u2YPUszWRSAnzszki8cv0AbiYJgYuFHQFFQEGwMElCISCBgYWEhWFr6M8QfYGGpYCFqY0BtopUIaWwkCikUEzMmQ3LnvpUBl92F1Xl3DTsXphkOM+eZc54zd0YEg0FFEy+NJl8egAfgAXgAHoAH4AF4AB7Ab1pCCIQQzQkghEBKSb1eb04AKSXBYJC2tjaUUs0DIISgVqvR09PD1dUVt7e3xONxKpUKuq7/fABd16nVaqysrBCJROju7mZ9fR3gt1RCuP1J+ZHkzc0N0WgU27YBmJyc5O7ujkAggOM4P7MCuq5TrVaJx+OEw2FKpRJCCPx+P+l0Giklmqb93Arous7b2xuZTIaTkxNisRjLy8tIKcnn88RisYYLbrWTa49D0zTe398ZHh5mdHSU3d1dDg8PAahWq/T19bGwsEC1WnVVZlcBpJRsbGyQzWYpFotkMhkKhQI+nw+A1dVVNE37eQ4IIbBtm46ODhKJBNvb2ziOQz6fZ2dnp+HG7OwsIyMjVCoV11ww3Op9y7JIpVL09vaytLTE4uIitVqNwcHBxls5FAqRTqfZ2tpyrRKuSKxpGpZlcXFxgWVZ5HI5AoEAQgjK5TJzc3MMDQ0hhODx8ZGxsTHXZDbcSL5SqTA1NcX4+DgDAwPk8/lPMalUiv39fSzLIhwOk0gk2NvbwzTNb++VtO/2vmEYSCnZ3Nzk8vKSp6cnurq6ME0T0zRpbW3l7OyM+/t7/H4/SinW1tY+XeM/Afjo69fXV6anp0kmk1xfX+M4DsViESklUkps2+b5+ZmDg4PGqJ2ZmSGZTFIqlZBSfg8iGAyqf3qEQiFlGIaKRqPq6OhI2batlFKqXC6r8/NzlUqllGEYyjAMNT8/r05PT1WhUFBKKeU4jlJKKSmlOj4+VpFIRLW0tKhQKKS+ksuXJBZCUK/X6ezsZGJigmKxiOM4aJqGaZo8PDyQy+UA6O/vJxKJUC6XG/2ulEIIQXt7O9lslpeXFwzD+JLQX55CHxAfm7U/ih0IBACwbftvRfX5fF9O/ttjVAiBpmmfbi6EwHGcxrk/i/mr2H99jCqlkFJ+O8b7K+EBeAAegAfgAXgAHoAH8D8F+AXujaoKYQ901QAAAABJRU5ErkJggg==",
   googleClientId: process.env.REACT_APP_GOOGLECLIENTID
     ? `${process.env.REACT_APP_GOOGLECLIENTID}`
     : "",
   metaDescription:
-    "The fastest way to sign PDFs & request signatures from others.",
+    "Portal de firma electrónica de ALI: firme documentos y solicite firmas en minutos.",
   settings: [
     {
       role: "contracts_Admin",
