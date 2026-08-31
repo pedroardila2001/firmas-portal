@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import login_img from "../assets/images/login_img.svg";
 import Parse from "parse";
 import Alert from "../primitives/Alert";
 import { appInfo } from "../constant/appinfo";
@@ -10,16 +9,15 @@ import {
   emailRegex,
 } from "../constant/const";
 import { useTranslation } from "react-i18next";
-import Loader from "../primitives/Loader";
+import { AliAuthShell } from "../components/AliAuthShell";
 
 function ForgotPassword() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [state, setState] = useState({ email: "", password: "", hideNav: "" });
+  const [state, setState] = useState({ email: "", password: "" });
   const [toast, setToast] = useState({ type: "", message: "" });
   const [isLoading, setIsLoading] = useState(false);
-  const [image, setImage] = useState();
 
   const handleChange = (event) => {
     let { name, value } = event.target;
@@ -27,13 +25,6 @@ function ForgotPassword() {
       value = value?.toLowerCase()?.replace(/\s/g, "");
     }
     setState({ ...state, [name]: value });
-  };
-
-  const resize = () => {
-    let currentHideNav = window.innerWidth <= 760;
-    if (currentHideNav !== state.hideNav) {
-      setState({ ...state, hideNav: currentHideNav });
-    }
   };
 
   const handleSubmit = async (event) => {
@@ -65,88 +56,69 @@ function ForgotPassword() {
 
   useEffect(() => {
     dispatch(fetchAppInfo());
-    saveLogo();
-    resize();
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
+    closeStaleSession();
     // eslint-disable-next-line
   }, []);
-  const saveLogo = async () => {
+  // Llegar a "olvide mi contrasena" con una sesion a medias abierta deja al
+  // portal en un estado raro; se cierra antes de empezar. (Antes esta funcion
+  // se llamaba saveLogo porque ademas guardaba el logotipo del tenant, que ya
+  // no se pinta.)
+  const closeStaleSession = async () => {
     try {
       await Parse.User.logOut();
     } catch (err) {
       console.log("err while logging out ", err);
     }
-      setImage(appInfo?.applogo || undefined);
   };
   return (
-    <div>
+    <>
       {isLoading && (
-        <div className="fixed w-full h-full flex justify-center items-center bg-black bg-opacity-30 z-50">
-          <Loader />
+        <div
+          aria-live="assertive"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-base-200/80 backdrop-blur-[2px]"
+        >
+          <span className="ali-auth-spinner text-base-content" />
         </div>
       )}
       {toast?.message && <Alert type={toast.type}>{toast.message}</Alert>}
-      <div className="md:p-10 lg:p-16">
-        <div className="md:p-4 lg:p-10 p-4 bg-base-100 text-base-content op-card">
-          <div className="w-[250px] h-[66px] inline-block overflow-hidden">
-            {image && (
-              <img
-                src={image}
-                className="object-contain h-full"
-                alt="applogo"
-              />
-            )}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-2">
-            <div>
-              <form onSubmit={handleSubmit}>
-                <h2 className="text-[30px] mt-6">{t("welcome")}</h2>
-                <span className="text-[12px] text-[#878787]">
-                  {t("reset-password-alert-3")}
-                </span>
-                <div className="w-full my-4 op-card bg-base-100 shadow-md outline outline-1 outline-slate-300/50">
-                  <div className="px-6 py-4">
-                    <label className="block text-xs">{t("email")}</label>
-                    <input
-                      type="email"
-                      name="email"
-                      className="op-input op-input-bordered op-input-sm w-full"
-                      value={state.email}
-                      onChange={handleChange}
-                      onInvalid={(e) =>
-                        e.target.setCustomValidity(t("input-required"))
-                      }
-                      onInput={(e) => e.target.setCustomValidity("")}
-                      required
-                    />
-                    <hr className="my-2 border-none" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-center text-xs font-bold">
-                  <button type="submit" className="op-btn op-btn-primary">
-                    {t("submit")}
-                  </button>
-                  <button
-                    onClick={() => navigate("/", { replace: true })}
-                    className="op-btn op-btn-secondary"
-                  >
-                    {t("login")}
-                  </button>
-                </div>
-              </form>
-            </div>
-            {!state.hideNav && (
-              <div className="self-center">
-                <div className="mx-auto md:w-[300px] lg:w-[500px]">
-                  <img src={login_img} alt="bisec" width="100%" />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+      {/* Sin subtitulo a proposito: las cadenas disponibles en el diccionario
+          (`reset-password-alert-1/2`) son los avisos de RESULTADO del envio, y
+          puestas aqui le dicen a la persona que ya le llego un correo que
+          todavia no ha pedido. El titulo mas el campo bastan. */}
+      <AliAuthShell title={t("reset-password-alert-3")}>
+        <form onSubmit={handleSubmit}>
+          <label
+            className="mb-1.5 block text-[12px] font-medium text-base-content/70"
+            htmlFor="ali-forgot-email"
+          >
+            {t("email")}
+          </label>
+          <input
+            id="ali-forgot-email"
+            type="email"
+            name="email"
+            autoFocus
+            placeholder="nombre@despacho.com"
+            className="ali-auth-input"
+            value={state.email}
+            onChange={handleChange}
+            onInvalid={(e) => e.target.setCustomValidity(t("input-required"))}
+            onInput={(e) => e.target.setCustomValidity("")}
+            required
+          />
+          <button type="submit" className="ali-auth-btn mt-6">
+            {t("submit")}
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/", { replace: true })}
+            className="mt-4 w-full text-[12.5px] text-base-content/50 transition-colors hover:text-base-content"
+          >
+            {t("login")}
+          </button>
+        </form>
+      </AliAuthShell>
+    </>
   );
 }
 

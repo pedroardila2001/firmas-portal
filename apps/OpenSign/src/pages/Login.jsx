@@ -3,8 +3,6 @@ import Parse from "parse";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { NavLink, useNavigate, useLocation } from "react-router";
-import login_img from "../assets/images/login_img.svg";
-import { useWindowSize } from "../hook/useWindowSize";
 import ModalUi from "../primitives/ModalUi";
 import {
   emailRegex,
@@ -18,9 +16,12 @@ import {
   saveLanguageInLocal,
   usertimezone
 } from "../constant/Utils";
-import Loader from "../primitives/Loader";
 import { useTranslation } from "react-i18next";
-import SelectLanguage from "../components/pdf/SelectLanguage";
+import {
+  AliAuthShell,
+  AliAuthLoader,
+  AliWordmark
+} from "../components/AliAuthShell";
 
 function Login() {
   const appName =
@@ -29,7 +30,6 @@ function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const { width } = useWindowSize();
   const [state, setState] = useState({
     email: "",
     password: "",
@@ -44,7 +44,6 @@ function Login() {
     Destination: ""
   });
   const [isModal, setIsModal] = useState(false);
-  const [image, setImage] = useState();
   const [errMsg, setErrMsg] = useState();
   useEffect(() => {
     handleUserExist();
@@ -81,11 +80,9 @@ function Login() {
     ) {
       navigate("/addadmin");
     }
-    if (app?.logo) {
-      setImage(app?.logo);
-    } else {
-      setImage(appInfo?.applogo || undefined);
-    }
+    // El logotipo del tenant ya no se pinta aqui: la portada del portal es la
+    // marca ALI y no un logo variable servido por `getlogobydomain`, que en una
+    // instalacion recien migrada todavia puede devolver el de OpenSign.
     dispatch(fetchAppInfo());
     if (localStorage.getItem("accesstoken")) {
       setState({ ...state, loading: true });
@@ -407,223 +404,176 @@ function Login() {
     }
   };
 
+  // Bloque de campo: etiqueta pequena arriba, campo alto y comodo debajo. El
+  // formulario de OpenSign metia los dos campos dentro de una tarjeta con
+  // `outline` y `shadow-md` — una caja dentro de otra caja — y usaba inputs
+  // `op-input-sm` de 12px, que en un portal al que se llega desde un correo
+  // se leen como un formulario de administracion, no como una entrada.
+  const inputId = (name) => `ali-login-${name}`;
+
   return errMsg ? (
-    <div className="h-screen flex justify-center text-center items-center p-4 text-gray-500 text-base">
-      {errMsg}
-    </div>
+    <main className="ali-auth-page">
+      <AliWordmark />
+      <p className="mt-9 max-w-[440px] text-center text-[13.5px] leading-relaxed text-base-content/55">
+        {errMsg}
+      </p>
+    </main>
+  ) : !appInfo?.appId ? (
+    <AliAuthLoader message={t("loading")} />
   ) : (
     <>
       {state.loading && (
         <div
           aria-live="assertive"
-          className="fixed w-full h-full flex justify-center items-center bg-black bg-opacity-30 z-50"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-base-200/80 backdrop-blur-[2px]"
         >
-          <Loader />
+          <span className="ali-auth-spinner text-base-content" />
         </div>
       )}
-      {appInfo && appInfo.appId ? (
-        <>
-          <div
-            aria-labelledby="loginHeading"
-            role="region"
-            className="pb-1 md:pb-4 pt-10 md:px-10 lg:px-16 h-full"
-          >
-            <div className="md:p-4 lg:p-10 p-4 bg-base-100 text-base-content op-card">
-              <div className="w-[250px] h-[66px] inline-block overflow-hidden">
-                {image && (
-                  <img
-                    src={image}
-                    className="object-contain h-full"
-                    alt="applogo"
-                  />
-                )}
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-2">
-                <div>
-                  <form onSubmit={handleLoginBtn} aria-label="Login Form">
-                    <h1 className="text-[30px] mt-6">{t("welcome")}</h1>
-                    <fieldset>
-                      <legend className="text-[12px] text-[#878787]">
-                        {t("Login-to-your-account")}
-                      </legend>
-                      <div className="w-full px-6 py-3 my-1 op-card bg-base-100 shadow-md outline outline-1 outline-slate-300/50">
-                        <label className="block text-xs" htmlFor="email">
-                          {t("email")}
-                        </label>
-                        <input
-                          id="email"
-                          type="email"
-                          className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                          name="email"
-                          autoComplete="username"
-                          value={state.email}
-                          onChange={handleChange}
-                          required
-                          onInvalid={(e) =>
-                            e.target.setCustomValidity(t("input-required"))
-                          }
-                          onInput={(e) => e.target.setCustomValidity("")}
-                        />
-                        <hr className="my-1 border-none" />
-                            <label className="block text-xs" htmlFor="password">
-                              {t("password")}
-                            </label>
-                            <div className="relative">
-                              <input
-                                id="password"
-                                type={
-                                  state.passwordVisible ? "text" : "password"
-                                }
-                                className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                                name="password"
-                                value={state.password}
-                                autoComplete="current-password"
-                                onChange={handleChange}
-                                onInvalid={(e) =>
-                                  e.target.setCustomValidity(
-                                    t("input-required")
-                                  )
-                                }
-                                onInput={(e) => e.target.setCustomValidity("")}
-                                required
-                              />
-                              <span
-                                className="absolute cursor-pointer top-[50%] right-[10px] -translate-y-[50%] text-base-content"
-                                onClick={togglePasswordVisibility}
-                              >
-                                {state.passwordVisible ? (
-                                  <i className="fa-light fa-eye-slash text-xs pb-1" /> // Close eye icon
-                                ) : (
-                                  <i className="fa-light fa-eye text-xs pb-1 " /> // Open eye icon
-                                )}
-                              </span>
-                            </div>
-                          <div className="relative mt-1">
-                            <NavLink
-                              to="/forgetpassword"
-                              className="text-[13px] op-link op-link-primary underline-offset-1 focus:outline-none ml-1"
-                            >
-                              {t("forgot-password")}?
-                            </NavLink>
-                          </div>
-                      </div>
-                    </fieldset>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-center text-xs font-bold mt-2">
-                      <button
-                        type="submit"
-                        className="op-btn op-btn-primary"
-                        disabled={state.loading}
-                      >
-                        {state.loading ? t("loading") : t("login")}
-                      </button>
-                    </div>
-                  </form>
-                </div>
-                {width >= 768 && (
-                  <div className="place-self-center">
-                    <div className="mx-auto md:w-[300px] lg:w-[400px] xl:w-[500px]">
-                      <img
-                        src={login_img}
-                        alt="The image illustrates a person from behind, seated at a desk with a four-monitor computer setup, in an environment with a light blue and white color scheme, featuring a potted plant to the right."
-                        width="100%"
-                      />
-                    </div>
-                  </div>
-                )}
+      <AliAuthShell
+        title={t("welcome")}
+        subtitle={t("Login-to-your-account")}
+      >
+        <form onSubmit={handleLoginBtn} aria-label="Login Form">
+          <div className="space-y-4">
+            <div>
+              <label
+                className="mb-1.5 block text-[12px] font-medium text-base-content/70"
+                htmlFor={inputId("email")}
+              >
+                {t("email")}
+              </label>
+              <input
+                id={inputId("email")}
+                type="email"
+                className="ali-auth-input"
+                name="email"
+                autoComplete="username"
+                autoFocus
+                placeholder="nombre@despacho.com"
+                value={state.email}
+                onChange={handleChange}
+                required
+                onInvalid={(e) => e.target.setCustomValidity(t("input-required"))}
+                onInput={(e) => e.target.setCustomValidity("")}
+              />
+            </div>
+            <div>
+              <label
+                className="mb-1.5 block text-[12px] font-medium text-base-content/70"
+                htmlFor={inputId("password")}
+              >
+                {t("password")}
+              </label>
+              <div className="relative">
+                <input
+                  id={inputId("password")}
+                  type={state.passwordVisible ? "text" : "password"}
+                  className="ali-auth-input pr-10"
+                  name="password"
+                  value={state.password}
+                  autoComplete="current-password"
+                  onChange={handleChange}
+                  onInvalid={(e) =>
+                    e.target.setCustomValidity(t("input-required"))
+                  }
+                  onInput={(e) => e.target.setCustomValidity("")}
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-base-content/40 transition-colors hover:text-base-content/80"
+                  onClick={togglePasswordVisibility}
+                  aria-label={t("password")}
+                  tabIndex={-1}
+                >
+                  {state.passwordVisible ? (
+                    <i className="fa-light fa-eye-slash text-[13px]" />
+                  ) : (
+                    <i className="fa-light fa-eye text-[13px]" />
+                  )}
+                </button>
               </div>
             </div>
-            <SelectLanguage />
-            {state.alertMsg && (
-              <Alert type={state.alertType}>{state.alertMsg}</Alert>
-            )}
           </div>
-          <ModalUi
-            isOpen={isModal}
-            title={t("additional-info")}
-            showClose={false}
+          <div className="mt-3 flex justify-end">
+            <NavLink
+              to="/forgetpassword"
+              className="text-[12.5px] text-base-content/50 underline-offset-2 transition-colors hover:text-base-content hover:underline"
+            >
+              {t("forgot-password")}?
+            </NavLink>
+          </div>
+          <button
+            type="submit"
+            className="ali-auth-btn mt-6"
+            disabled={state.loading}
           >
-            <form className="px-4 py-3 text-base-content">
-              <div className="mb-3">
-                <label
-                  htmlFor="Company"
-                  style={{ display: "flex" }}
-                  className="block text-xs font-semibold"
-                >
-                  {t("company")}{" "}
-                  <span className="text-[red] text-[13px]">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                  id="Company"
-                  value={userDetails.Company}
-                  onChange={(e) =>
-                    setUserDetails({
-                      ...userDetails,
-                      Company: e.target.value
-                    })
-                  }
-                  onInvalid={(e) =>
-                    e.target.setCustomValidity(t("input-required"))
-                  }
-                  onInput={(e) => e.target.setCustomValidity("")}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label
-                  htmlFor="JobTitle"
-                  style={{ display: "flex" }}
-                  className="block text-xs font-semibold"
-                >
-                  {t("job-title")}
-                  <span className="text-[red] text-[13px]">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
-                  id="JobTitle"
-                  value={userDetails.Destination}
-                  onChange={(e) =>
-                    setUserDetails({
-                      ...userDetails,
-                      Destination: e.target.value
-                    })
-                  }
-                  onInvalid={(e) =>
-                    e.target.setCustomValidity(t("input-required"))
-                  }
-                  onInput={(e) => e.target.setCustomValidity("")}
-                  required
-                />
-              </div>
-              <div className="mt-4 gap-2 flex flex-row">
-                <button
-                  type="button"
-                  className="op-btn op-btn-primary"
-                  onClick={(e) => handleSubmitbtn(e)}
-                >
-                  {t("login")}
-                </button>
-                <button
-                  type="button"
-                  className="op-btn op-btn-ghost text-base-content"
-                  onClick={logOutUser}
-                >
-                  {t("cancel")}
-                </button>
-              </div>
-            </form>
-          </ModalUi>
-        </>
-      ) : (
-        <div
-          aria-live="assertive"
-          className="fixed w-full h-full flex justify-center items-center z-50"
-        >
-          <Loader />
-        </div>
-      )}
+            {state.loading ? t("loading") : t("login")}
+          </button>
+        </form>
+      </AliAuthShell>
+      <ModalUi isOpen={isModal} title={t("additional-info")} showClose={false}>
+        <form className="px-4 py-3 text-base-content">
+          <div className="mb-3">
+            <label
+              htmlFor="Company"
+              className="mb-1.5 block text-[12px] font-medium text-base-content/70"
+            >
+              {t("company")} <span className="text-error">*</span>
+            </label>
+            <input
+              type="text"
+              className="ali-auth-input"
+              id="Company"
+              value={userDetails.Company}
+              onChange={(e) =>
+                setUserDetails({ ...userDetails, Company: e.target.value })
+              }
+              onInvalid={(e) => e.target.setCustomValidity(t("input-required"))}
+              onInput={(e) => e.target.setCustomValidity("")}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label
+              htmlFor="JobTitle"
+              className="mb-1.5 block text-[12px] font-medium text-base-content/70"
+            >
+              {t("job-title")} <span className="text-error">*</span>
+            </label>
+            <input
+              type="text"
+              className="ali-auth-input"
+              id="JobTitle"
+              value={userDetails.Destination}
+              onChange={(e) =>
+                setUserDetails({ ...userDetails, Destination: e.target.value })
+              }
+              onInvalid={(e) => e.target.setCustomValidity(t("input-required"))}
+              onInput={(e) => e.target.setCustomValidity("")}
+              required
+            />
+          </div>
+          <div className="mt-5 flex flex-row gap-2">
+            <button
+              type="button"
+              className="op-btn op-btn-primary"
+              onClick={(e) => handleSubmitbtn(e)}
+            >
+              {t("login")}
+            </button>
+            <button
+              type="button"
+              className="op-btn op-btn-ghost text-base-content"
+              onClick={logOutUser}
+            >
+              {t("cancel")}
+            </button>
+          </div>
+        </form>
+      </ModalUi>
+      {state.alertMsg && <Alert type={state.alertType}>{state.alertMsg}</Alert>}
     </>
   );
 }

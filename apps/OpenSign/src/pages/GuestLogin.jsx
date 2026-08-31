@@ -8,11 +8,10 @@ import {
   contractUsers,
   saveLanguageInLocal
 } from "../constant/Utils";
-import logo from "../assets/images/logo.png";
 import { appInfo } from "../constant/appinfo";
 import Parse from "parse";
 import { useTranslation } from "react-i18next";
-import SelectLanguage from "../components/pdf/SelectLanguage";
+import { AliWordmark, AliAuthFooter } from "../components/AliAuthShell";
 import LoaderWithMsg from "../primitives/LoaderWithMsg";
 import ModalUi from "../primitives/ModalUi";
 import Loader from "../primitives/Loader";
@@ -31,7 +30,6 @@ function GuestLogin() {
     isLoad: true,
     message: t("loading-mssg")
   });
-  const [appLogo, setAppLogo] = useState("");
   const [documentId, setDocumentId] = useState(id);
   const [contactId, setContactId] = useState(contactBookId);
   const [sendmail, setSendmail] = useState();
@@ -76,7 +74,6 @@ function GuestLogin() {
 
   //function generate serverUrl and parseAppId from url and save it in local storage
   const handleServerUrl = async () => {
-      setAppLogo(logo);
     const favicon = localStorage.getItem("favicon");
 
     localStorage.clear(); // Clears everything
@@ -284,7 +281,7 @@ function GuestLogin() {
                   required
                   type="tel"
                   pattern="[0-9]{4}"
-                  className="w-full op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content text-xs"
+                  className="ali-auth-input"
                   placeholder={t("otp-placeholder")}
                   value={OTP}
                   onChange={(e) => setOTP(e.target.value)}
@@ -309,70 +306,65 @@ function GuestLogin() {
       {isLoading.isLoad ? (
         <LoaderWithMsg isLoading={isLoading} />
       ) : (
-        <div className="pb-1 md:pb-4 pt-10 md:px-10 lg:px-16">
-          <div className="md:p-4 lg:p-10 p-4 text-base-content bg-base-100 op-card shadow-md">
-            <div className="w-[250px] h-[66px] inline-block overflow-hidden mb-6">
-              {appLogo && (
-                <img
-                  src={appLogo}
-                  className="object-contain h-full"
-                  alt="logo"
-                />
-              )}
-            </div>
+        <div className="ali-auth-page">
+          <div className="mb-9 md:mb-11">
+            <AliWordmark />
+          </div>
+          <div className="ali-auth-card">
             {contactId ? (
-              <div className="w-full md:w-[50%] text-base-content">
-                <h1 className="text-2xl md:text-[30px]">{t("welcome")}</h1>
-                <legend className="text-[12px] text-[#878787] mt-2 mb-1">
+              <div className="w-full text-base-content">
+                <h1 className="font-serif text-[25px] md:text-[28px] font-normal leading-tight tracking-tight">
+                  {t("welcome")}
+                </h1>
+                <p className="mt-2 text-[13.5px] leading-relaxed text-base-content/55">
                   {t("get-otp-alert")}
-                </legend>
-                <div className="p-[20px] outline outline-1 outline-slate-300/50 my-2 op-card shadow-md">
+                </p>
+                <div className="mt-6">
                   <input
                     type="email"
                     name="email"
                     value={email}
-                    className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full disabled:text-[#5c5c5c] text-xs"
+                    className="ali-auth-input disabled:text-base-content/55"
                     disabled
                   />
                 </div>
-                <div className="mt-3">
+                <div className="mt-5">
                   <button
-                    className="op-btn op-btn-primary flex items-center"
+                    className="ali-auth-btn"
                     onClick={(e) => {
                       e.preventDefault();
-                        SendOtp();
+                      SendOtp();
                     }}
                     disabled={loading}
                   >
-                        <i className="fa-light fa-message-sms mr-2"></i>
-                        {loading ? t("loading") : t("get-verification-code")}
+                    <i className="fa-light fa-message-sms" aria-hidden="true" />
+                    {loading ? t("loading") : t("get-verification-code")}
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="w-full md:w-[50%] text-base-content">
-                <h1 className="text-2xl md:text-[30px]">{t("welcome")}</h1>
-                <legend className="text-[12px] text-[#878787] mt-2">
+              <div className="w-full text-base-content">
+                <h1 className="font-serif text-[25px] md:text-[28px] font-normal leading-tight tracking-tight">
+                  {t("welcome")}
+                </h1>
+                <p className="mt-2 text-[13.5px] leading-relaxed text-base-content/55">
                   {t("provide-your-details")}
-                </legend>
-                <form
-                  className="p-[20px] pt-[15px] outline outline-1 outline-slate-300/50 my-2 op-card shadow-md"
-                  onSubmit={handleUserData}
-                >
+                </p>
+                <form className="mt-6" onSubmit={handleUserData}>
                   <div className="mb-2">
                     <label
                       htmlFor="name"
-                      className="block text-xs font-semibold"
+                      className="mb-1.5 block text-[12px] font-medium text-base-content/70"
                     >
                       {t("name")}
-                      <span className="text-[red] text-[13px]"> *</span>
+                      <span className="text-error"> *</span>
                     </label>
                     <input
                       type="text"
                       name="name"
                       value={contact.name}
                       onChange={handleInputChange}
-                      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                      className="ali-auth-input"
                       disabled={loading}
                       onInvalid={(e) =>
                         e.target.setCustomValidity(t("input-required"))
@@ -385,17 +377,17 @@ function GuestLogin() {
                   <div className="mb-2">
                     <label
                       htmlFor="email"
-                      className="block text-xs font-semibold"
+                      className="mb-1.5 block text-[12px] font-medium text-base-content/70"
                     >
                       {t("email")}
-                      <span className="text-[red] text-[13px]"> *</span>
+                      <span className="text-error"> *</span>
                     </label>
                     <input
                       type="email"
                       name="email"
                       value={contact.email}
                       onChange={handleInputChange}
-                      className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                      className="ali-auth-input"
                       placeholder={t("enter-email")}
                       required
                       disabled
@@ -406,7 +398,7 @@ function GuestLogin() {
                       <div className="mb-2">
                         <label
                           htmlFor="phone"
-                          className="block text-xs font-semibold"
+                          className="mb-1.5 block text-[12px] font-medium text-base-content/70"
                         >
                           {t("phone")}
                         </label>
@@ -415,7 +407,7 @@ function GuestLogin() {
                           name="phone"
                           value={contact.phone}
                           onChange={handleInputChange}
-                          className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                          className="ali-auth-input"
                           disabled={loading}
                           placeholder={t("phone-optional")}
                         />
@@ -423,7 +415,7 @@ function GuestLogin() {
                       <div className="mb-2">
                         <label
                           htmlFor="company"
-                          className="block text-xs font-semibold"
+                          className="mb-1.5 block text-[12px] font-medium text-base-content/70"
                         >
                           {t("company")}
                         </label>
@@ -433,7 +425,7 @@ function GuestLogin() {
                           name="company"
                           value={contact.company}
                           onChange={handleInputChange}
-                          className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                          className="ali-auth-input"
                           disabled={loading}
                           placeholder={t("phone-optional")}
                         />
@@ -441,7 +433,7 @@ function GuestLogin() {
                       <div className="mb-2">
                         <label
                           htmlFor="jobTitle"
-                          className="block text-xs font-semibold"
+                          className="mb-1.5 block text-[12px] font-medium text-base-content/70"
                         >
                           {t("job-title")}
                         </label>
@@ -451,7 +443,7 @@ function GuestLogin() {
                           name="jobTitle"
                           value={contact.jobTitle}
                           onChange={handleInputChange}
-                          className="op-input op-input-bordered op-input-sm focus:outline-none hover:border-base-content w-full text-xs"
+                          className="ali-auth-input"
                           disabled={loading}
                           placeholder={t("phone-optional")}
                         />
@@ -469,20 +461,18 @@ function GuestLogin() {
                       ? t("hide-optional-details")
                       : t("optional-details")}
                   </button>
-                  <div className="mt-2 flex justify-start">
-                    <button
-                      type="submit"
-                      className="op-btn op-btn-primary"
-                      disabled={loading}
-                    >
-                      {loading ? t("loading") : t("next")}
-                    </button>
-                  </div>
+                  <button
+                    type="submit"
+                    className="ali-auth-btn mt-5"
+                    disabled={loading}
+                  >
+                    {loading ? t("loading") : t("next")}
+                  </button>
                 </form>
               </div>
             )}
           </div>
-          <SelectLanguage />
+          <AliAuthFooter />
         </div>
       )}
     </div>
