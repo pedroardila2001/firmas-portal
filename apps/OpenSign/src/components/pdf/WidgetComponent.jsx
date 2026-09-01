@@ -237,7 +237,7 @@ function WidgetComponent(props) {
             className="p-[12px] grid lg:grid-cols-2 gap-x-2 lg:gap-y-1.5 pt-3"
             data-tut="addWidgets"
             role="list"
-            aria-label="Add widgets"
+            aria-label="Agregar campos"
           >
             <WidgetList
               updateWidgets={handleWidgetType}

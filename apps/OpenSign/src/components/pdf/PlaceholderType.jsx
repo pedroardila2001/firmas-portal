@@ -212,7 +212,7 @@ function PlaceholderType(props) {
         : undefined;
       return props.pos.SignUrl ? (
         <img
-          alt="signature"
+          alt="firma"
           draggable="false"
           src={props.pos.SignUrl}
           style={sigImgStyle}
@@ -677,7 +677,7 @@ function PlaceholderType(props) {
         </div>
       ) : widgetValue ? (
         <img
-          alt="signature"
+          alt="firma"
           draggable="false"
           src={widgetValue}
           className={`${props.pos.signatureType !== "type" ? "object-contain" : ""} w-full h-full select-none-cls`}

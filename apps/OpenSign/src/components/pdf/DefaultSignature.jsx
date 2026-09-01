@@ -66,7 +66,7 @@ function DefaultSignature(props) {
         <div className="op-card shadow-md h-[111px] w-[90%] p-2">
           {activeTab === 0 ? (
             <img
-              alt="signature"
+              alt="firma"
               className="w-full h-full object-contain"
               src={defaultSignImg}
             />
@@ -74,7 +74,7 @@ function DefaultSignature(props) {
             activeTab === 1 &&
             (myInitial ? (
               <img
-                alt="signature"
+                alt="firma"
                 className="w-full h-full object-contain"
                 src={myInitial}
               />

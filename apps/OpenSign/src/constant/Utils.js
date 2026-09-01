@@ -119,8 +119,13 @@ export function getEnv() {
 }
 const appName = "ALI Firmas";
 
-export const defaultMailBody = `<p>Hi {{receiver_name}},</p><br><p>We hope this email finds you well. {{sender_name}}&nbsp;has requested you to review and sign&nbsp;{{document_title}}.</p><p>Your signature is crucial to proceed with the next steps as it signifies your agreement and authorization.</p><br><p><a href='{{signing_url}}' rel='noopener noreferrer' target='_blank'>Sign here</a></p><br><br><p>If you have any questions or need further clarification regarding the document or the signing process,  please contact the sender.</p><br><p>Thanks</p><p> Team ${appName}</p><br>`;
-export const defaultMailSubject = `{{sender_name}} has requested you to sign {{document_title}}`;
+// Cuerpo por defecto de la solicitud de firma. Lo usa el envio DESDE el portal
+// (PlaceHolderSign / TemplatePlaceholder): los envios desde ALI llevan su
+// propia plantilla con marca (apps/api signature-service.ts) y no pasan por
+// aqui. Estaba en ingles, empezaba por "Hi" y firmaba "Team ALI Firmas": lo
+// recibia un firmante colombiano que nunca habia oido hablar de OpenSign.
+export const defaultMailBody = `<p>Hola {{receiver_name}},</p><br><p>{{sender_name}}&nbsp;te ha enviado&nbsp;{{document_title}} para que lo revises y lo firmes.</p><p>Tu firma es necesaria para continuar: con ella manifiestas tu acuerdo y tu autorizacion.</p><br><p><a href='{{signing_url}}' rel='noopener noreferrer' target='_blank'>Firmar el documento</a></p><br><br><p>Si tienes dudas sobre el documento o sobre el proceso de firma, responde a quien te lo envio.</p><br><p>Gracias,</p><p>Equipo ${appName}</p><br>`;
+export const defaultMailSubject = `{{sender_name}} te envio {{document_title}} para firmar`;
 export const nonPresentMaskCss = (base) => ({
   ...base,
   width: "0px",
@@ -4225,31 +4230,55 @@ function _removeWidgetAnnotations(pdfDoc) {
 
 export const mailTemplate = (param) => {
   const appName = "ALI Firmas";
-  const logo = `<div style='padding:10px'><img src='https://firma.aliado.pro/static/images/ali-logo.png' height='50' /></div>`;
+  // Correo de solicitud de firma con la identidad de ALI. El de OpenSign venia
+  // en ingles ("Digital Signature Request"), con la banda turquesa del tema y
+  // un boton naranja: era el rastro de marca mas visible que quedaba, porque
+  // lo recibe el firmante — alguien que nunca entra al portal. Esta version es
+  // la misma familia visual del correo que manda el API de ALI
+  // (signature-service.ts): fondo neutro, tarjeta blanca, "A" en serif y un
+  // solo acento casi-negro.
+  const escape = (value) =>
+    String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  const row = (label, value) =>
+    value
+      ? `<tr><td style='padding:2px 16px 2px 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#737373;white-space:nowrap'>${label}</td><td style='padding:2px 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#0a0a0a'>${escape(value)}</td></tr>`
+      : "";
 
-  const subject = `${param.senderName} has requested you to sign "${param.title}"`;
-  const body =
-    "<html><head><meta http-equiv='Content-Type' content='text/html;charset=UTF-8' /></head><body><div style='background-color:#f5f5f5;padding:20px'><div style='background:white;padding-bottom:20px'>" +
-    logo +
-    `<div style='padding:2px;font-family:system-ui;background-color:${themeColor}'><p style='font-size:20px;font-weight:400;color:white;padding-left:20px'>Digital Signature Request</p></div><div><p style='padding:20px;font-size:14px;margin-bottom:10px'>` +
-    param.senderName +
-    " has requested you to review and sign <strong>" +
-    param.title +
-    "</strong>.</p><div style='padding: 5px 0px 5px 25px;display:flex;flex-direction:row;justify-content:space-around'><table><tr><td style='font-weight:bold;font-family:sans-serif;font-size:15px'>Sender</td><td></td><td style='color:#626363;font-weight:bold'>" +
-    param.senderMail +
-    "</td></tr><tr><td style='font-weight:bold;font-family:sans-serif;font-size:15px'>Organization</td><td></td><td style='color:#626363;font-weight:bold'> " +
-    param.organization +
-    "</td></tr><tr><td style='font-weight:bold;font-family:sans-serif;font-size:15px'>Expires on</td><td></td><td style='color:#626363;font-weight:bold'>" +
-    param.localExpireDate +
-    "</td></tr><tr><td style='font-weight:bold;font-family:sans-serif;font-size:15px'>Note</td><td></td><td style='color:#626363;font-weight:bold'>" +
-    param.note +
-    "</td></tr><tr><td></td><td></td></tr></table></div> <div style='margin-left:70px'><a target=_blank href=" +
-    param.signingUrl +
-    "><button style='padding:12px;background-color:#d46b0f;color:white;border:0px;font-weight:bold;margin-top:30px'>Sign here</button></a></div><div style='display:flex;justify-content:center;margin-top:10px'></div></div></div><div><p> This is an automated email from " +
-    appName +
-    ". For any queries regarding this email, please contact the sender " +
-    param.senderMail +
-    " directly.</p></div></div></body></html> ";
+  const subject = `${param.senderName} te envio "${param.title}" para firmar`;
+  const body = `<!DOCTYPE html>
+<html lang='es'><body style='margin:0;padding:0;background:#fafafa;'>
+  <table role='presentation' width='100%' cellpadding='0' cellspacing='0' style='background:#fafafa;padding:32px 16px;'>
+    <tr><td align='center'>
+      <table role='presentation' width='100%' cellpadding='0' cellspacing='0' style='max-width:520px;background:#ffffff;border:1px solid #e5e5e5;'>
+        <tr><td style='padding:28px 32px 8px;font-family:Georgia,"Times New Roman",serif;font-size:22px;color:#0a0a0a;'>
+          <span style='display:inline-block;width:34px;height:34px;line-height:34px;text-align:center;border-radius:9999px;background:#0a0a0a;color:#fafafa;font-size:18px;'>A</span>
+          <span style='margin-left:10px;vertical-align:middle;'>ALI</span>
+          <span style='display:block;margin-top:4px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#737373;letter-spacing:.08em;'>ASISTENTE LEGAL INTELIGENTE</span>
+        </td></tr>
+        <tr><td style='padding:16px 32px 0;font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#0a0a0a;'>
+          ${escape(param.senderName)} te envio <strong>${escape(param.title)}</strong> para que lo revises y lo firmes.
+        </td></tr>
+        <tr><td style='padding:18px 32px 0;'>
+          <table role='presentation' cellpadding='0' cellspacing='0'>
+            ${row("Remitente", param.senderMail)}
+            ${row("Organizacion", param.organization)}
+            ${row("Vence el", param.localExpireDate)}
+            ${row("Nota", param.note)}
+          </table>
+        </td></tr>
+        <tr><td style='padding:24px 32px 4px;'>
+          <a href='${param.signingUrl}' target='_blank' rel='noopener noreferrer' style='display:inline-block;padding:12px 22px;background:#171717;color:#fafafa;font-family:Arial,Helvetica,sans-serif;font-size:14px;text-decoration:none;'>Firmar el documento</a>
+        </td></tr>
+        <tr><td style='padding:20px 32px 28px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#737373;line-height:1.6;'>
+          Este es un correo automatico de ${appName}. Si tienes dudas sobre el documento, responde directamente a ${escape(param.senderMail)}.
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
   return { subject, body };
 };
 

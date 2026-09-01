@@ -694,7 +694,7 @@ function Opensigndrive() {
               {/* Mobile search toggle */}
               <button
                 className="md:hidden p-2 flex justify-center items-center focus:outline-none rounded-md hover:bg-base-300 text-[18px]"
-                aria-label="Search"
+                aria-label="Buscar"
                 onClick={() => setMobileSearchOpen((open) => !open)}
               >
                 <i

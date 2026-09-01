@@ -353,7 +353,7 @@ const ManageSign = () => {
                 {image ? (
                   <div className="mysignatureCanvas relative border-[2px] border-[#888] rounded-box overflow-hidden">
                     <img
-                      alt="signature"
+                      alt="firma"
                       src={image}
                       className="w-full h-full object-contain"
                     />
@@ -498,7 +498,7 @@ const ManageSign = () => {
               >
                 {stamp ? (
                   <img
-                    alt="signature"
+                    alt="firma"
                     src={stamp}
                     className="w-full h-full object-contain"
                   />

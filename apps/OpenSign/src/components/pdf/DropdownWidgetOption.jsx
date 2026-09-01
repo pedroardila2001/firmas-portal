@@ -229,7 +229,7 @@ function DropdownWidgetOption(props) {
               <div>
                 <i
                   className="fa-light fa-square-plus text-[25px] ml-[10px] op-text-primary cursor-pointer"
-                  aria-label="Add option"
+                  aria-label="Agregar opcion"
                   onClick={handleAddInput}
                 ></i>
               </div>

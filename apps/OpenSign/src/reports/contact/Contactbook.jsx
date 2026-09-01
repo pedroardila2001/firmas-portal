@@ -272,7 +272,7 @@ const Contactbook = (props) => {
             {titleElement?.width < 500 && (
               <button
                 className="flex justify-center items-center focus:outline-none rounded-md text-[18px]"
-                aria-label="Search"
+                aria-label="Buscar"
                 onClick={() =>
                   props.setMobileSearchOpen(!props.mobileSearchOpen)
                 }

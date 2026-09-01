@@ -671,11 +671,11 @@ const TemplatesReport = (props) => {
     const subject =
       doc?.RequestSubject ||
       doc?.ExtUserPtr?.TenantId?.RequestSubject ||
-      `{{sender_name}} has requested you to sign "{{document_title}}"`;
+      `{{sender_name}} te envio "{{document_title}}" para firmar`;
     const body =
       doc?.RequestBody ||
       doc?.ExtUserPtr?.TenantId?.RequestBody ||
-      `<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8' /></head><body><p>Hi {{receiver_name}},</p><br><p>We hope this email finds you well. {{sender_name}} has requested you to review and sign <b>"{{document_title}}"</b>.</p><p>Your signature is crucial to proceed with the next steps as it signifies your agreement and authorization.</p><br><p><a href='{{signing_url}}' rel='noopener noreferrer' target='_blank'>Sign here</a></p><br><br><p>If you have any questions or need further clarification regarding the document or the signing process,  please contact the sender.</p><br><p>Thanks</p><p> Team ${appName}</p><br></body> </html>`;
+      `<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8' /></head><body><p>Hola {{receiver_name}},</p><br><p>{{sender_name}} te ha enviado <b>"{{document_title}}"</b> para que lo revises y lo firmes.</p><p>Tu firma es necesaria para continuar: con ella manifiestas tu acuerdo y tu autorizacion.</p><br><p><a href='{{signing_url}}' rel='noopener noreferrer' target='_blank'>Firmar el documento</a></p><br><br><p>Si tienes dudas sobre el documento o sobre el proceso de firma, responde a quien te lo envio.</p><br><p>Gracias,</p><p>Equipo ${appName}</p><br></body> </html>`;
     const res = replaceMailVaribles(subject, body, variables);
     setEmailEditorType(
       doc?.EmailEditorType?.request ||
@@ -1122,7 +1122,7 @@ const TemplatesReport = (props) => {
             {titleElement?.width < 500 && (
               <button
                 className="flex justify-center items-center focus:outline-none rounded-md text-[18px]"
-                aria-label="Search"
+                aria-label="Buscar"
                 onClick={() =>
                   props.setMobileSearchOpen(!props.mobileSearchOpen)
                 }
