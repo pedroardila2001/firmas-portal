@@ -4,18 +4,15 @@ import { useTranslation } from "react-i18next";
 const DashboardButton = lazyWithRetry(() => import("./DashboardButton"));
 const DashboardCard = lazyWithRetry(() => import("./DashboardCard"));
 const DashboardReport = lazyWithRetry(() => import("./DashboardReport"));
+// "Solicitar firmas" sale tambien de aqui: el menu ya no lo ofrece, y dejarlo
+// en el panel mantenia abierta la puerta por la que una solicitud nace sin
+// existir para ALI. Las firmas se piden desde el editor de ALI.
 const buttonList = [
   {
     label: "Sign yourself",
     redirectId: "sHAnZphf69",
     redirectType: "Form",
     icon: "fa-light fa-pen-nib"
-  },
-  {
-    label: "Request signatures",
-    redirectId: "8mZzFxbG1z",
-    redirectType: "Form",
-    icon: "fa-light fa-paper-plane"
   }
 ];
 const GetDashboard = (props) => {

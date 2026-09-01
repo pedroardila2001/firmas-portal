@@ -449,23 +449,22 @@ function UserProfile() {
               >
                 {editmode ? t("save") : t("edit")}
               </button>
-              <button
-                type="button"
-                onClick={() =>
-                  editmode ? handleCancel() : navigate("/changepassword")
-                }
-                className={
-                      `op-btn ${editmode ? "op-btn-ghost w-[100px]" : "op-btn-secondary"}`
-                }
-              >
-                {editmode ? t("cancel") : t("change-password")}
-              </button>
-              <button
-                onClick={() => handleDeleteAccountBtn()}
-                className="op-link op-link-accent text-sm mx-2"
-              >
-                {t("delete-account")}
-              </button>
+              {/* Fuera del modo edicion este boton llevaba a "Cambiar
+                  contrasena", y al lado habia un "Eliminar cuenta". Ninguno de
+                  los dos puede vivir aqui: la cuenta del portal la crea, cifra
+                  y renueva ALI (`signature_portal_accounts`), asi que cambiar
+                  la clave se deshace sola en el siguiente aprovisionamiento y
+                  borrar la cuenta deja al abogado sin acceso a sus propias
+                  firmas. Ambas cosas se gestionan desde ALI. */}
+              {editmode && (
+                <button
+                  type="button"
+                  onClick={() => handleCancel()}
+                  className="op-btn op-btn-ghost w-[100px]"
+                >
+                  {t("cancel")}
+                </button>
+              )}
             </div>
           </div>
           {isdeleteModal && (
