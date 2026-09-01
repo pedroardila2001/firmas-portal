@@ -33,8 +33,8 @@ const HomeLayout = () => {
   const tenantId = localStorage.getItem("TenantId");
 
   useEffect(() => {
-    const language = localStorage.getItem("i18nextLng");
-    i18n.changeLanguage(language);
+    // El idioma lo fija `i18n.js` en espanol; releer `i18nextLng` solo servia
+    // para resucitar una eleccion vieja de OpenSign.
     localStorage.setItem("isGuestSigner", "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

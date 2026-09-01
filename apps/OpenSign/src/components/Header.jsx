@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
-import dp from "../assets/images/dp.png";
 import FullScreenButton from "./FullScreenButton";
-import ThemeToggle from "./ThemeToggle";
+import AliAvatar from "./AliAvatar";
 import { useNavigate } from "react-router";
 import Parse from "parse";
 import { useWindowSize } from "../hook/useWindowSize";
 import {
   getAppLogo,
-  openInNewTab,
   saveLanguageInLocal
 } from "../constant/Utils";
 import { useTranslation } from "react-i18next";
@@ -22,10 +20,9 @@ const Header = ({ isConsole, setIsLoggingOut }) => {
   const { width } = useWindowSize();
   const dispatch = useDispatch();
   const username = localStorage.getItem("username") || "";
-  const image = localStorage.getItem("profileImg") || dp;
+  const image = localStorage.getItem("profileImg") || "";
   const [isOpen, setIsOpen] = useState(false);
   const [applogo, setAppLogo] = useState("");
-  const [isDarkTheme, setIsDarkTheme] = useState();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -112,25 +109,6 @@ const Header = ({ isConsole, setIsLoggingOut }) => {
   }, [isOpen]);
 
 
-  useEffect(() => {
-    const updateThemeStatus = () => {
-      const isDarkTheme =
-        document.documentElement.getAttribute("data-theme") === "opensigndark";
-      setIsDarkTheme(isDarkTheme);
-    };
-    updateThemeStatus();
-
-    const observer = new MutationObserver(() => {
-      updateThemeStatus();
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"]
-    });
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <>
@@ -151,11 +129,7 @@ const Header = ({ isConsole, setIsLoggingOut }) => {
             {applogo && (
               <img
                 className="object-contain h-full w-auto"
-                src={
-                      isDarkTheme
-                      ? "/static/js/assets/images/logo-dark.png"
-                      : applogo
-                }
+                src={applogo}
                 alt="logo"
               />
             )}
@@ -166,15 +140,8 @@ const Header = ({ isConsole, setIsLoggingOut }) => {
               <FullScreenButton />
           </div>
           {width >= 768 && (
-            <div
-              onClick={toggleDropdown}
-              className="cursor-pointer w-[35px] h-[35px] rounded-full ring-[1px] ring-offset-2 ring-gray-400 overflow-hidden"
-            >
-              <img
-                className="w-[35px] h-[35px] object-contain"
-                src={image}
-                alt="img"
-              />
+            <div onClick={toggleDropdown} className="cursor-pointer">
+              <AliAvatar name={username} imageUrl={image} size={32} />
             </div>
           )}
           {width >= 768 && (
@@ -207,15 +174,6 @@ const Header = ({ isConsole, setIsLoggingOut }) => {
             >
               {!isConsole && (
                 <>
-                    <li
-                      onClick={() =>
-                        openInNewTab("https://www.aliado.pro")
-                      }
-                    >
-                      <span>
-                        <i className="fa-light fa-book"></i> {t("docs")}
-                      </span>
-                    </li>
                   <li
                     onClick={() => {
                       setIsOpen(false);
@@ -226,17 +184,6 @@ const Header = ({ isConsole, setIsLoggingOut }) => {
                       <i className="fa-light fa-user"></i> {t("profile")}
                     </span>
                   </li>
-                    <li
-                      onClick={() => {
-                        setIsOpen(false);
-                        navigate("/changepassword");
-                      }}
-                    >
-                      <span>
-                        <i className="fa-light fa-lock"></i>{" "}
-                        {t("change-password")}
-                      </span>
-                    </li>
                   <li
                     onClick={() => {
                       setIsOpen(false);
@@ -246,16 +193,6 @@ const Header = ({ isConsole, setIsLoggingOut }) => {
                     <span>
                       <i className="fa-light fa-check-square"></i>{" "}
                       {t("verify-document")}
-                    </span>
-                  </li>
-                  <li>
-                    <span>
-                      <i className="fa-light fa-moon"></i>
-                      {t("dark-mode")}
-                      <span className="text-[10px] font-semibold bg-base-300 text-base-content px-1 rounded-md">
-                        BETA
-                      </span>
-                      <ThemeToggle />
                     </span>
                   </li>
                 </>

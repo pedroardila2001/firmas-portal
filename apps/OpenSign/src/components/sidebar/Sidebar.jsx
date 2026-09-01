@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import Menu from "./Menu";
 import Submenu from "./SubMenu";
 import SocialMedia from "../SocialMedia";
-import dp from "../../assets/images/dp.png";
-import sidebarList, { subSetting } from "../../json/menuJson";
+import AliAvatar from "../AliAvatar";
+import sidebarList from "../../json/menuJson";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { useWindowSize } from "../../hook/useWindowSize";
@@ -20,7 +20,7 @@ const Sidebar = () => {
   const [menuList, setmenuList] = useState([]);
   const [submenuOpen, setSubmenuOpen] = useState(false);
   const username = localStorage.getItem("username");
-  const image = localStorage.getItem("profileImg") || dp;
+  const image = localStorage.getItem("profileImg") || "";
   const tenantname = localStorage.getItem("Extand_Class")
     ? JSON.parse(localStorage.getItem("Extand_Class"))?.[0]?.Company
     : "";
@@ -38,27 +38,11 @@ const Sidebar = () => {
     }
   };
 
+  // El menu ya no depende del rol de OpenSign: `subSetting` (Preferencias y
+  // Usuarios) se retiro porque ALI gobierna las cuentas del portal, asi que
+  // admin y usuario ven exactamente lo mismo.
   const menuItem = async () => {
-    try {
-      if (localStorage.getItem("defaultmenuid")) {
-        const Extand_Class = localStorage.getItem("Extand_Class");
-        const extClass = Extand_Class && JSON.parse(Extand_Class);
-        const userRole = extClass?.[0]?.UserRole || "contracts_User";
-        const isAdmin =
-          userRole === "contracts_Admin" || userRole === "contracts_OrgAdmin";
-        const newSidebarList = sidebarList.map((item) => {
-          if (item.title !== "Settings") return item;
-          const newItem = { ...item };
-          const baseChildren = isAdmin ? subSetting : subSetting?.slice(0, 1);
-            const mysignature = newItem.children.slice(0, 1);
-            newItem.children = [...mysignature, ...baseChildren];
-          return newItem;
-        });
-        setmenuList(newSidebarList);
-      }
-    } catch (e) {
-      console.error("Problem", e);
-    }
+    setmenuList(sidebarList);
   };
 
   const toggleSubmenu = (title) => {
@@ -81,15 +65,8 @@ const Sidebar = () => {
      ${isOpen ? "w-full md:w-64" : "w-0"}`}
     >
       <div className="flex px-2 py-3 gap-2 items-center shadow-md">
-        <div
-          onClick={() => handleProfile()}
-          className="w-[75px] h-[75px] rounded-full ring-[2px] ring-offset-2 ring-gray-400 overflow-hidden cursor-pointer"
-        >
-          <img
-            className="w-full h-full object-contain"
-            src={image}
-            alt="Profile"
-          />
+        <div onClick={() => handleProfile()} className="cursor-pointer">
+          <AliAvatar name={username} imageUrl={image} size={56} rounded="rounded-lg" />
         </div>
         <div>
           <p

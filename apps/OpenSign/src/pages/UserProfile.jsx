@@ -5,7 +5,7 @@ import React, {
 import { Navigate, useNavigate } from "react-router";
 import Parse from "parse";
 import { SaveFileSize } from "../constant/saveFileSize";
-import dp from "../assets/images/dp.png";
+import AliAvatar from "../components/AliAvatar";
 import {
   compressImage,
   sanitizeFileName,
@@ -20,7 +20,6 @@ import {
 import ModalUi from "../primitives/ModalUi";
 import Loader from "../primitives/Loader";
 import { useTranslation } from "react-i18next";
-import SelectLanguage from "../components/pdf/SelectLanguage";
 
 function UserProfile() {
   const navigate = useNavigate();
@@ -305,13 +304,12 @@ function UserProfile() {
         <div className="flex justify-center items-center w-full relative">
           <div className="bg-base-100 text-base-content flex flex-col justify-center shadow-md rounded-box w-[450px]">
             <div className="flex flex-col justify-center items-center my-4">
-              <div className="w-[200px] h-[200px] overflow-hidden rounded-full">
-                <img
-                  className="object-contain w-full h-full"
-                  src={Image === "" ? dp : Image}
-                  alt="dp"
-                />
-              </div>
+              <AliAvatar
+                name={name}
+                imageUrl={Image === "" ? "" : Image}
+                size={160}
+                rounded="rounded-2xl"
+              />
               {editmode && (
                 <input
                   type="file"
@@ -439,17 +437,6 @@ function UserProfile() {
                     </span>
                   )}
                 </span>
-              </li>
-              <li
-                className={`flex justify-between items-center border-b-[1px] border-gray-300 break-all ${
-                  editmode ? "py-1.5" : "py-2"
-                }`}
-              >
-                <span className="font-semibold">{t("language")}:</span>{" "}
-                <SelectLanguage
-                  isProfile={true}
-                  updateExtUser={updateExtUser}
-                />
               </li>
             </ul>
             <div className="flex flex-col md:flex-row justify-center gap-2 pt-2 pb-3 md:pt-3 md:pb-4 mx-2 md:mx-0">

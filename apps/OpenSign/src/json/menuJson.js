@@ -1,24 +1,25 @@
-const userssetting = [
-  {
-    icon: "fa-light fa-users fa-fw",
-    title: "Users",
-    target: "_self",
-    pageType: "",
-    description: "",
-    objectId: "users"
-  }
-];
-export const subSetting = [
-  {
-    icon: "fa-light fa-sliders",
-    title: "Preferences",
-    target: "_self",
-    pageType: "",
-    description: "",
-    objectId: "preferences"
-  },
-  ...userssetting
-];
+/**
+ * Menu lateral del portal de firmas de ALI.
+ *
+ * Solo queda lo que el portal hace y ALI NO: colocar campos sobre el PDF,
+ * firmar, y seguir el estado de las solicitudes. Todo lo que duplicaba una
+ * superficie de ALI se retiro (ver `infra/opensign/patches/README.md` §9):
+ *
+ * - "Drive" duplicaba la Boveda y era la puerta por la que un documento
+ *   entraba SIN pasar por ALI (sin fila en `documents`, sin creditos, sin
+ *   sincronizacion de estado): el origen de los documentos dobles.
+ * - "Solicitar firmas" duplicaba "Enviar a firma" del editor de ALI, con el
+ *   mismo problema: la solicitud no existia para ALI.
+ * - "Plantillas" duplicaba la redaccion y los kits de marca de ALI.
+ * - "Agenda de contactos" duplicaba los contactos de ALI.
+ * - "Token API" y "Webhook" son integracion de terceros con OpenSign; ALI
+ *   habla con el server por Parse y la CE nunca emitio webhooks.
+ * - "Preferencias" y "Usuarios" administran un tenant que aprovisiona ALI:
+ *   editarlos a mano descuadra la cuenta con `signature_portal_accounts`.
+ *
+ * Las RUTAS siguen existiendo en `App.jsx` (un enlace viejo no se rompe);
+ * lo que se retira es la invitacion a usarlas.
+ */
 
 const sidebarList = [
   {
@@ -36,48 +37,6 @@ const sidebarList = [
     pageType: "form",
     description: "",
     objectId: "sHAnZphf69"
-  },
-  {
-    icon: "fa-light fa-paper-plane",
-    title: "Request signatures",
-    target: "_self",
-    pageType: "form",
-    description: "",
-    objectId: "8mZzFxbG1z"
-  },
-  {
-    icon: "fa-light fa-newspaper",
-    title: "Templates",
-    target: "_self",
-    pageType: null,
-    description: null,
-    objectId: null,
-    children: [
-      {
-        icon: "fa-light fa-file-signature",
-        title: "Create template",
-        target: "_self",
-        pageType: "form",
-        description: "",
-        objectId: "template"
-      },
-      {
-        icon: "fa-light fa-file-contract",
-        title: "Manage templates",
-        target: "_self",
-        pageType: "report",
-        description: "",
-        objectId: "6TeaPr321t"
-      }
-    ]
-  },
-  {
-    icon: "fa-light fa-folder",
-    title: "OpenSign™ Drive",
-    target: "_self",
-    pageType: "",
-    description: "",
-    objectId: "drive"
   },
   {
     icon: "fa-light fa-address-card",
@@ -138,14 +97,6 @@ const sidebarList = [
     ]
   },
   {
-    icon: "fa-light fa-address-book",
-    title: "Contactbook",
-    target: "_self",
-    pageType: "report",
-    description: "",
-    objectId: "contacts"
-  },
-  {
     icon: "fa-light fa-cog",
     title: "Settings",
     target: "_self",
@@ -160,22 +111,6 @@ const sidebarList = [
         pageType: "",
         description: "",
         objectId: "managesign"
-      },
-      {
-        icon: "fa-light fa-key",
-        title: "API Token",
-        target: "_self",
-        pageType: "",
-        description: "",
-        objectId: "generatetoken"
-      },
-      {
-        icon: "fa-light fa-globe",
-        title: "Webhook",
-        target: "_self",
-        pageType: "",
-        description: "",
-        objectId: "webhook"
       }
     ]
   }

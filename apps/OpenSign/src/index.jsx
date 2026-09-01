@@ -1,6 +1,5 @@
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import "./styles/dark-theme-improvements.css";
 import App from "./App";
 import { showUpgradeProgress, hideUpgradeProgress } from "./utils";
 import { Provider } from "react-redux";
@@ -21,10 +20,12 @@ if (localStorage.getItem("showUpgradeProgress")) {
   showUpgradeProgress();
 }
 
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "dark") {
-  document.documentElement.setAttribute("data-theme", "opensigndark");
-}
+// El portal de firmas tiene UN tema, el claro de ALI: el "modo oscuro (BETA)"
+// de OpenSign nunca se termino de pintar (tablas y visor de PDF se quedaban en
+// claro) y ALI no ofrece esa eleccion aqui. Se limpia la clave heredada para
+// que a quien lo dejo encendido no le siga saliendo oscuro.
+localStorage.removeItem("theme");
+document.documentElement.setAttribute("data-theme", "opensigncss");
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

@@ -1,7 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { sourceCodeUrl } from "../constant/const";
-import SelectLanguage from "./pdf/SelectLanguage";
 
 // ── Superficie de autenticacion de ALI ──────────────────────────────────────
 // Calcada de apps/web/src/pages/LoginPage.tsx del producto: columna centrada
@@ -33,15 +32,14 @@ export function AliWordmark({ tagline = "Portal de firmas", className = "" }) {
   );
 }
 
-// Pie comun: idioma (discreto, en espanol) y la oferta de codigo fuente que
-// exige la AGPL-3 §13 a quien opera el portal por red. En OpenSign el enlace
+// Pie comun: la oferta de codigo fuente que exige la AGPL-3 §13 a quien opera
+// el portal por red (el selector de idioma se retiro: el portal es en espanol). En OpenSign el enlace
 // solo existia dentro de la sesion iniciada, donde el usuario anonimo — que
 // es justamente el destinatario de la obligacion — nunca llegaba.
-export function AliAuthFooter({ showLanguage = true }) {
+export function AliAuthFooter() {
   const { t } = useTranslation();
   return (
     <div className="mt-8 flex w-full max-w-[420px] flex-col items-center gap-3">
-      {showLanguage ? <SelectLanguage isBare /> : null}
       <a
         href={sourceCodeUrl}
         target="_blank"
@@ -59,7 +57,6 @@ export function AliAuthShell({
   subtitle,
   children,
   tagline,
-  showLanguage = true,
   wide = false
 }) {
   return (
@@ -80,7 +77,7 @@ export function AliAuthShell({
         ) : null}
         <div className={title || subtitle ? "mt-7" : ""}>{children}</div>
       </div>
-      <AliAuthFooter showLanguage={showLanguage} />
+      <AliAuthFooter />
     </main>
   );
 }

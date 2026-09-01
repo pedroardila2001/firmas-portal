@@ -1,31 +1,26 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import Backend from "i18next-http-backend";
-import LanguageDetector from "i18next-browser-languagedetector";
 
 i18n
   .use(Backend)
-  .use(LanguageDetector) // Use LanguageDetector directly without creating an instance
   .use(initReactI18next)
   .init({
     backend: {
       loadPath: "/locales/{{lng}}/{{ns}}.json"
     },
-    // ALI opera en Colombia: el portal habla espanol salvo que la persona pida
-    // otra cosa a mano. Antes el detector consultaba `navigator` ANTES de caer
-    // al respaldo, asi que un navegador en ingles — el caso normal en un Mac o
-    // un Windows recien instalado — abria el portal en ingles aunque el
-    // destinatario fuera un abogado colombiano. Se quita "navigator" del orden:
-    // la unica fuente es la eleccion explicita guardada en localStorage, y a
-    // falta de eleccion manda `fallbackLng`.
+    // ALI opera en Colombia y el portal habla espanol, punto. Antes habia un
+    // detector (localStorage) y un selector de 7 idiomas heredados de
+    // OpenSign: bastaba con que alguien lo tocara — o que arrastrara un
+    // `i18nextLng` viejo — para que el portal de un abogado colombiano
+    // amaneciera en ingles. El idioma es fijo: `lng` gana sobre cualquier
+    // valor guardado, y los diccionarios de los otros 6 idiomas siguen en
+    // `public/locales` (el server los usa para los correos) pero ya no hay
+    // forma de llegar a ellos desde la interfaz.
+    lng: "es",
     fallbackLng: "es",
-    supportedLngs: ["es", "en", "fr", "it", "de", "hi", "kr"],
+    supportedLngs: ["es"],
     load: "languageOnly",
-    detection: {
-      order: ["localStorage"],
-      // Defines where the detected language should be cached.
-      caches: ["localStorage"]
-    },
     ns: ["translation"], // default namespace
     defaultNS: "translation", // default namespace
     //Enables debug mode, which outputs detailed logs to the console about the translation process.
